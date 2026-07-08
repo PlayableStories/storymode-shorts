@@ -108,14 +108,33 @@ npm run catalogue
 
 (It also regenerates automatically as part of `npm run build`.)
 
-## Deploying to Vercel
+## Deploying (GitHub Pages)
 
-The site deploys to [Vercel](https://vercel.com) with **zero extra config**:
+The site is a **fully static** build (all pages are generated at build time), so
+it's hosted for free on **GitHub Pages**. Deployment is automatic:
 
-1. Import the `PlayableStories/storymode-shorts` repo in Vercel.
-2. Vercel auto-detects Next.js — no settings to change. The build step
-   regenerates thumbnails and GAMES.md automatically.
-3. Point the domain `shorts.intostorymode.com` at the project.
+- **Push to `main`** → the [`Deploy to GitHub Pages`](.github/workflows/deploy.yml)
+  GitHub Action builds the site (`npm run build`, which also refreshes the
+  thumbnails and GAMES.md) and publishes it. You don't run anything by hand.
+
+One-time setup (already done for this repo):
+
+1. Repo is **public** and **Settings → Pages → Source** is set to **GitHub
+   Actions**.
+2. The custom domain lives in [`public/CNAME`](public/CNAME)
+   (`shorts.intostorymode.com`), and a DNS `CNAME` record points `shorts` at
+   `playablestories.github.io`. Enable **Enforce HTTPS** in Settings → Pages
+   once the certificate is issued.
+
+To preview the production build locally:
+
+```bash
+npm run build        # creates ./out
+npx serve out        # open the printed URL
+```
+
+> Because the site is static, `npm run start` is not used. Use `npm run dev` for
+> development and `npx serve out` to preview the built output.
 
 ## Project layout
 
