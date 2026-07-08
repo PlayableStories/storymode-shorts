@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getAllGames, getGameBySlug } from "@/lib/content-source";
+import { GameEmbed } from "@/components/GameEmbed";
+import { Markdown } from "@/components/Markdown";
+import { ThemeTag } from "@/components/ThemeTag";
+
+export function generateStaticParams() {
+  return getAllGames().map((game) => ({ slug: game.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const game = getGameBySlug(slug);
+  if (!game) return { title: "Not found — Storymode Shorts" };
+  return {
+    title: `${game.title} — Storymode Shorts`,
+    description: `${game.title}, selected from ${game.workshop || "a workshop"}.`,
+  };
+}
+
+export default async function GameDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const game = getGameBySlug(slug);
+  if (!game) notFound();
+
+  return (
+    <main id="main" className="mx-auto max-w-reading px-5 py-12">
+      <p className="mb-6">
+        <Link
+          href="/"
+          className="rounded-sm text-sm text-accent underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          ← Back to the collection
+        </Link>
+      </p>
+
+      <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        {game.title}
+      </h1>
+      <p className="mt-2 text-muted">{game.creator}</p>
+
+      {game.themes.length > 0 ? (
+        <ul className="mt-3 flex flex-wrap gap-1.5">
+          {game.themes.map((theme) => (
+            <li key={theme}>
+              <ThemeTag theme={theme} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      <div className="mt-8">
+        <GameEmbed game={game} />
+      </div>
+
+      {game.body ? (
+        <div className="mt-8 text-lg">
+          <Markdown>{game.body}</Markdown>
+        </div>
+      ) : null}
+
+      {game.workshop ? (
+        <p className="mt-8 text-sm text-muted">
+          Selected from {game.workshop}.
+        </p>
+      ) : null}
+    </main>
+  );
+}
