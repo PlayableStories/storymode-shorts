@@ -46,6 +46,16 @@ export default function AboutPage() {
         </h2>
         <div className="mt-3 space-y-4 text-lg leading-relaxed text-ink/90">
           <p>
+            Already made a game in a workshop?{" "}
+            <Link
+              href="/submit"
+              className="text-accent underline underline-offset-2"
+            >
+              Submit it to the collection
+            </Link>
+            .
+          </p>
+          <p>
             Want to make a short game of your own? Come to a workshop. You can
             find the materials and upcoming sessions here:
           </p>

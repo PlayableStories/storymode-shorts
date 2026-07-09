@@ -110,6 +110,43 @@ You don't need to touch any design or code to add a game:
 
 That's it. The website will pick the new game up automatically.
 
+## Submitting a game (the form)
+
+Workshop participants can submit a game through the **[Submit a
+game](https://shorts.intostorymode.com/submit)** page (`app/submit/page.tsx`)
+instead of editing markdown. The form reuses the same fixed vocabularies as the
+content — [`lib/themes.ts`](lib/themes.ts) and the reflection question pool in
+[`lib/reflections.ts`](lib/reflections.ts) — so it can never drift from the model
+above.
+
+Because the site is a static export with no server, the form posts to
+**[Web3Forms](https://web3forms.com)** (a free, static-friendly endpoint) and
+each submission arrives **by email**. Nothing is published automatically — a
+maintainer reads every submission, checks consent, and writes the
+`content/games/*.md` file by hand. The human curation/consent gate is unchanged;
+the form is only the intake.
+
+The flow:
+
+```
+maker fills /submit  →  email to the maintainer  →  maintainer reviews consent
+                     →  hand-writes content/games/<slug>.md
+```
+
+### Setting up the form (one-time)
+
+1. Get a free access key at **https://web3forms.com** — enter the inbox where
+   submissions should land, then click the verification email to activate it.
+   (Optionally restrict the allowed domain to `shorts.intostorymode.com` in the
+   Web3Forms dashboard so the public key can't be reused elsewhere.)
+2. **Production:** add the key as a GitHub repo **variable** named
+   `WEB3FORMS_ACCESS_KEY` (Settings → Secrets and variables → Actions →
+   **Variables** — it's public and domain-locked, so a variable, not a secret).
+   The deploy workflow passes it in as `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY`.
+3. **Local dev:** copy [`.env.example`](.env.example) to `.env.local` and set the
+   same key. Without a key the form still renders but shows a gentle "not
+   switched on yet" message instead of submitting.
+
 ## Consent & credits (important)
 
 Creator names and game titles are **only ever real with the participant's

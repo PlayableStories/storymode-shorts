@@ -10,7 +10,13 @@ export function SiteHeader() {
         >
           Storymode Shorts
         </Link>
-        <nav aria-label="Primary">
+        <nav aria-label="Primary" className="flex items-center gap-5">
+          <Link
+            href="/submit"
+            className="rounded-sm text-sm text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            Submit a game
+          </Link>
           <Link
             href="/about"
             className="rounded-sm text-sm text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
