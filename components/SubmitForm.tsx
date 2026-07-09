@@ -43,7 +43,9 @@ export function SubmitForm({
   const [play, setPlay] = useState("");
   const [workshop, setWorkshop] = useState(DEFAULT_WORKSHOP);
   const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
-  const [blurb, setBlurb] = useState("");
+  const [description, setDescription] = useState("");
+  const [captureConsent, setCaptureConsent] = useState(true);
+  const [screenshotLink, setScreenshotLink] = useState("");
   const [reflections, setReflections] = useState(() =>
     categories.map((c) => ({
       id: c.id,
@@ -94,11 +96,18 @@ export function SubmitForm({
     );
     lines.push(`Contact email (not published): ${email.trim() || "—"}`);
     lines.push(`Link to play: ${play.trim() || "—"}`);
+    lines.push(
+      `Screenshot: ${
+        captureConsent ? "may capture from the game" : "do not capture"
+      }${
+        screenshotLink.trim() ? ` · maker's image: ${screenshotLink.trim()}` : ""
+      }`,
+    );
     lines.push(`Workshop: ${workshop.trim() || "—"}`);
     lines.push(`Themes: ${selectedThemes.join(", ") || "—"}`);
     lines.push("");
     lines.push("Description:");
-    lines.push(blurb.trim() || "—");
+    lines.push(description.trim() || "—");
     lines.push("");
     lines.push("Behind the game:");
     const answered = reflections.filter((r) => r.answer.trim() !== "");
@@ -121,6 +130,13 @@ export function SubmitForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!configured || status === "submitting") return;
+    if (!captureConsent && screenshotLink.trim() === "") {
+      setStatus("error");
+      setErrorMsg(
+        "Please either let us capture a screenshot or paste an image link.",
+      );
+      return;
+    }
     setStatus("submitting");
     setErrorMsg("");
 
@@ -135,9 +151,11 @@ export function SubmitForm({
       credit_publicly: creditConsent === "yes" ? "yes" : "no",
       contact_email: email.trim(),
       play_link: play.trim(),
+      screenshot_consent: captureConsent ? "yes" : "no",
+      screenshot_link: screenshotLink.trim(),
       workshop: workshop.trim(),
       themes: selectedThemes.join(", "),
-      description: blurb.trim(),
+      description: description.trim(),
       content_note: contentNote.trim(),
       consent: consent ? "confirmed" : "not confirmed",
       message: buildMessage(),
@@ -244,35 +262,36 @@ export function SubmitForm({
 
         <div>
           <label htmlFor="play" className={labelClass}>
-            Link to play it
+            Link to play it <span className="text-muted">(required)</span>
           </label>
           <input
             id="play"
             type="url"
             inputMode="url"
+            required
             placeholder="https://your-name.itch.io/your-game"
             value={play}
             onChange={(e) => setPlay(e.target.value)}
             className={fieldClass}
           />
-          <p className={helpClass}>
-            Usually an itch.io link. Leave blank if it isn't published yet.
-          </p>
+          <p className={helpClass}>Usually an itch.io link.</p>
         </div>
 
         <div>
-          <label htmlFor="blurb" className={labelClass}>
-            A short description
+          <label htmlFor="description" className={labelClass}>
+            Describe your game <span className="text-muted">(required)</span>
           </label>
           <textarea
-            id="blurb"
-            rows={3}
-            value={blurb}
-            onChange={(e) => setBlurb(e.target.value)}
+            id="description"
+            rows={7}
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className={fieldClass}
           />
           <p className={helpClass}>
-            A sentence or two about what the game is — in your own words.
+            A paragraph or two — the way you&rsquo;d describe it on itch.io. What
+            is the game? What&rsquo;s it about? And how do you play it?
           </p>
         </div>
 
@@ -308,6 +327,40 @@ export function SubmitForm({
             className={fieldClass}
           />
         </div>
+
+        <fieldset>
+          <legend className={labelClass}>Screenshot for the thumbnail</legend>
+          <label className="mt-2 flex items-start gap-2 text-ink">
+            <input
+              type="checkbox"
+              checked={captureConsent}
+              onChange={(e) => setCaptureConsent(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-line text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            />
+            <span>
+              You&rsquo;re welcome to take a screen capture of my game to use as
+              its thumbnail.
+            </span>
+          </label>
+          <div className="mt-3">
+            <label htmlFor="screenshot-link" className={labelClass}>
+              Prefer your own image?
+            </label>
+            <input
+              id="screenshot-link"
+              type="url"
+              inputMode="url"
+              placeholder="https://…/screenshot.png"
+              value={screenshotLink}
+              onChange={(e) => setScreenshotLink(e.target.value)}
+              className={fieldClass}
+            />
+            <p className={helpClass}>
+              Optional — paste a link to a screenshot or cover image you&rsquo;d
+              like us to use instead.
+            </p>
+          </div>
+        </fieldset>
       </fieldset>
 
       {/* ── Behind the game (optional reflections) ───────────── */}
@@ -388,16 +441,20 @@ export function SubmitForm({
 
         <div>
           <label htmlFor="creator" className={labelClass}>
-            Your name or the credit you'd like
+            Your name <span className="text-muted">(required)</span>
           </label>
           <input
             id="creator"
             type="text"
+            required
             value={creator}
             onChange={(e) => setCreator(e.target.value)}
-            placeholder={PLACEHOLDER_CREDIT}
             className={fieldClass}
           />
+          <p className={helpClass}>
+            For our records, so we can talk to you. Whether it&rsquo;s shown
+            publicly is your choice, just below.
+          </p>
         </div>
 
         <fieldset>
@@ -432,11 +489,13 @@ export function SubmitForm({
 
         <div>
           <label htmlFor="email" className={labelClass}>
-            Your email <span className="text-muted">(never published)</span>
+            Your email{" "}
+            <span className="text-muted">(required, never published)</span>
           </label>
           <input
             id="email"
             type="email"
+            required
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
