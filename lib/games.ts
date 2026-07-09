@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { isTheme } from "./themes";
-import type { Game } from "./game";
+import { categoryOrder, isReflectionCategory } from "./reflections";
+import type { Game, Reflection } from "./game";
 
 /*
  * The content reader (server-only — it uses the filesystem). Reads the
@@ -18,6 +19,32 @@ const GAMES_DIR = path.join(process.cwd(), "content", "games");
 
 function toStringOr(value: unknown, fallback: string): string {
   return typeof value === "string" && value.trim() !== "" ? value : fallback;
+}
+
+/**
+ * Read optional "behind the game" reflections from frontmatter. Keeps only
+ * well-formed entries (known category + non-empty question and answer) and
+ * sorts them seed → making → reflection.
+ */
+function parseReflections(value: unknown): Reflection[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter(
+      (r): r is { category: unknown; question: unknown; answer: unknown } =>
+        typeof r === "object" && r !== null,
+    )
+    .map((r) => ({
+      category: r.category,
+      question: typeof r.question === "string" ? r.question.trim() : "",
+      answer: typeof r.answer === "string" ? r.answer.trim() : "",
+    }))
+    .filter(
+      (r): r is Reflection =>
+        isReflectionCategory(r.category) &&
+        r.question !== "" &&
+        r.answer !== "",
+    )
+    .sort((a, b) => categoryOrder(a.category) - categoryOrder(b.category));
 }
 
 function parseGameFile(fileName: string): Game {
@@ -47,6 +74,11 @@ function parseGameFile(fileName: string): Game {
         : undefined,
     addedAt: toStringOr(data.addedAt, ""),
     body: content.trim(),
+    reflections: parseReflections(data.reflections),
+    contentNote:
+      typeof data.contentNote === "string" && data.contentNote.trim() !== ""
+        ? data.contentNote.trim()
+        : undefined,
   };
 }
 

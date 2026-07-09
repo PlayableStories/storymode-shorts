@@ -1,10 +1,18 @@
 import type { Theme } from "./themes";
+import type { ReflectionCategory } from "./reflections";
 
 /*
  * The Game shape and pure helpers — no filesystem, no server-only code — so
  * these are safe to import into client components (like the cards and filter).
  * The actual reading of markdown files lives in games.ts (server-only).
  */
+
+/** One maker reflection: a chosen question from a category, and its answer. */
+export interface Reflection {
+  category: ReflectionCategory;
+  question: string;
+  answer: string;
+}
 
 export interface Game {
   /** Filename without ".md" — used in the /games/[slug] URL. */
@@ -25,6 +33,13 @@ export interface Game {
   addedAt: string;
   /** The markdown description (raw). */
   body: string;
+  /**
+   * Optional "behind the game" reflections — 0 or 3 entries, one per category,
+   * ordered seed → making → reflection.
+   */
+  reflections: Reflection[];
+  /** Optional one-line "gentle heads-up" for tender subjects. */
+  contentNote?: string;
 }
 
 /**

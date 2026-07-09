@@ -8,6 +8,17 @@ play: "#"
 embed: ""
 blurb: ""
 addedAt: "2026-07-03"
+contentNote: "Touches on self-doubt and work stress."
+reflections:
+  - category: seed
+    question: "Where did this game start for you?"
+    answer: "It started the night I couldn't sleep, wondering if I'd made a mistake opening the shop at all."
+  - category: making
+    question: "How do you play it — what does someone actually do?"
+    answer: "You scroll slowly back through a few late nights, and the room quietly loses its colour the longer you stay in each one."
+  - category: reflection
+    question: "What do you hope someone feels when they play?"
+    answer: "Not cheered up — just a little less alone in the doubt."
 ---
 
 A quiet game about questioning why you began a business in the first place —
