@@ -14,7 +14,9 @@ This repo works as **two things at once**:
 
 > **Note:** the three games currently in the collection are **placeholder
 > samples** with placeholder credits. They will be replaced with real, consented
-> games from workshops.
+> games from workshops. On the site they're marked with a small **Placeholder**
+> badge (from `placeholder: true` in their frontmatter) so no one mistakes them
+> for submitted games — real entries simply omit that field.
 
 ## How it connects to the workshops
 

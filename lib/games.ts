@@ -79,6 +79,7 @@ function parseGameFile(fileName: string): Game {
       typeof data.contentNote === "string" && data.contentNote.trim() !== ""
         ? data.contentNote.trim()
         : undefined,
+    placeholder: data.placeholder === true,
   };
 }
 

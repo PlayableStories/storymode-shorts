@@ -5,6 +5,7 @@ import { getAllGames, getGameBySlug } from "@/lib/content-source";
 import { GameEmbed } from "@/components/GameEmbed";
 import { Markdown } from "@/components/Markdown";
 import { ThemeTag } from "@/components/ThemeTag";
+import { PlaceholderTag } from "@/components/PlaceholderTag";
 import { ContentNote } from "@/components/ContentNote";
 import { GameReflections } from "@/components/GameReflections";
 
@@ -51,14 +52,19 @@ export default async function GameDetailPage({
       </h1>
       <p className="mt-2 text-muted">{game.creator}</p>
 
-      {game.themes.length > 0 ? (
-        <ul className="mt-3 flex flex-wrap gap-1.5">
-          {game.themes.map((theme) => (
-            <li key={theme}>
-              <ThemeTag theme={theme} />
-            </li>
-          ))}
-        </ul>
+      {game.placeholder || game.themes.length > 0 ? (
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          {game.placeholder ? <PlaceholderTag /> : null}
+          {game.themes.length > 0 ? (
+            <ul className="flex flex-wrap gap-1.5">
+              {game.themes.map((theme) => (
+                <li key={theme}>
+                  <ThemeTag theme={theme} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
       ) : null}
 
       {game.contentNote ? (

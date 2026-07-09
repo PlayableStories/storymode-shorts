@@ -40,6 +40,11 @@ export interface Game {
   reflections: Reflection[];
   /** Optional one-line "gentle heads-up" for tender subjects. */
   contentNote?: string;
+  /**
+   * True for the sample/placeholder games shipped with the repo, so the site
+   * can mark them as not-yet-submitted. Real games omit this (or set false).
+   */
+  placeholder: boolean;
 }
 
 /**
