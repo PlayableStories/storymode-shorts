@@ -27,6 +27,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build # runs copy-thumbnails + build-catalogue, then exports to ./out
+        env:
+          # Public, domain-locked Web3Forms key — a repo *variable*, not a secret.
+          # Set it under Settings → Secrets and variables → Actions → Variables.
+          NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY: ${{ vars.WEB3FORMS_ACCESS_KEY }}
       - run: touch out/.nojekyll # never run Jekyll (keeps the _next/ folder)
       - uses: actions/upload-pages-artifact@v3
         with:
