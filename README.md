@@ -44,6 +44,17 @@ thumbnail: "thumbnails/slow.svg"  # repo-relative, so it renders on GitHub too
 play: "#"                         # link to play (itch.io etc.); "#" = coming soon
 embed: ""                         # optional itch.io iframe embed URL; falls back to play
 addedAt: "2026-07-02"
+contentNote: ""                   # optional; see "A gentle heads-up" below
+reflections:                      # optional; see "Behind the game" below
+  - category: seed
+    question: "What did you want to explore or say?"
+    answer: "That slowing down isn't the same as doing nothing."
+  - category: making
+    question: "What was the trickiest thing to get working?"
+    answer: "Making it feel calm rather than boring."
+  - category: reflection
+    question: "Is there a small detail you're glad you kept?"
+    answer: "The way the screen waits a beat longer than you expect."
 ---
 
 A tiny game about slowing down.
@@ -51,6 +62,31 @@ A tiny game about slowing down.
 
 The **themes** are a fixed list: `care`, `memory`, `identity`, `place`,
 `community`, `politics`, `lived experience`.
+
+### Behind the game (optional reflections)
+
+A game's page can carry a short "behind the game" section in the maker's own
+words. There are **three categories**, and the maker answers **one question from
+each**:
+
+- **The seed** — _"Where did this game start for you?"_ or _"What did you want to
+  explore or say?"_
+- **Making it** — _"How do you play it — what does someone actually do?"_ or
+  _"What was the trickiest thing to get working?"_
+- **Playing it** — _"What do you hope someone feels when they play?"_ or _"Is
+  there a small detail you're glad you kept?"_
+
+Add them as the `reflections` list shown above (`category`, the `question` you
+chose, and the `answer`). It's entirely optional — leave it out and the page
+simply doesn't show that section. The questions live in one place,
+[`lib/reflections.ts`](lib/reflections.ts).
+
+### A gentle heads-up (optional content note)
+
+Some games touch tender subjects (grief, illness, and so on). If a maker wants,
+they can add a one-line `contentNote:` — it shows quietly above the game as _"A
+gentle heads-up: …"_ so a player can choose when to play. Optional; omit it and
+nothing appears.
 
 ## Adding a game
 
@@ -60,10 +96,11 @@ You don't need to touch any design or code to add a game:
    `content/games/my-game.md`. The filename (without `.md`) becomes its web
    address.
 2. Fill in the frontmatter and write a short description in the body.
-3. Add a thumbnail image to the `thumbnails/` folder and point `thumbnail:` at it
+3. Optionally add the maker's `reflections` and a `contentNote` (see below).
+4. Add a thumbnail image to the `thumbnails/` folder and point `thumbnail:` at it
    (keep the path repo-relative, like `thumbnails/my-game.svg`, so it renders on
    GitHub too).
-4. Regenerate the catalogue so GAMES.md stays up to date:
+5. Regenerate the catalogue so GAMES.md stays up to date:
 
    ```bash
    npm run catalogue
@@ -79,6 +116,11 @@ permission**. Until then, use the placeholder credit `"Workshop participant"`.
 Adding a real credit is a **one-field edit**: change the `creator:` line in that
 game's markdown file. **Never invent or hard-code a real participant's name
 anywhere.**
+
+The same rule covers the `reflections` and `contentNote` — they're the
+participant's own words, so only ever use real ones with their permission. When
+a real game is submitted, these fields come straight from the maker's answers on
+the submission form.
 
 ## Running the site locally
 

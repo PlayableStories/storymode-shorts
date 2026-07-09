@@ -5,6 +5,8 @@ import { getAllGames, getGameBySlug } from "@/lib/content-source";
 import { GameEmbed } from "@/components/GameEmbed";
 import { Markdown } from "@/components/Markdown";
 import { ThemeTag } from "@/components/ThemeTag";
+import { ContentNote } from "@/components/ContentNote";
+import { GameReflections } from "@/components/GameReflections";
 
 export function generateStaticParams() {
   return getAllGames().map((game) => ({ slug: game.slug }));
@@ -59,6 +61,12 @@ export default async function GameDetailPage({
         </ul>
       ) : null}
 
+      {game.contentNote ? (
+        <div className="mt-8">
+          <ContentNote note={game.contentNote} />
+        </div>
+      ) : null}
+
       <div className="mt-8">
         <GameEmbed game={game} />
       </div>
@@ -68,6 +76,8 @@ export default async function GameDetailPage({
           <Markdown>{game.body}</Markdown>
         </div>
       ) : null}
+
+      <GameReflections reflections={game.reflections} />
 
       {game.workshop ? (
         <p className="mt-8 text-sm text-muted">
