@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getBlurb, type Game } from "@/lib/game";
 import { ThemeTag } from "./ThemeTag";
+import { PlaceholderTag } from "./PlaceholderTag";
 
 /**
  * A game card for the home grid. Presentational only.
@@ -33,14 +34,19 @@ export function GameCard({ game }: { game: Game }) {
           </h3>
           <p className="text-sm text-muted">{game.creator}</p>
           {blurb ? <p className="text-sm text-ink/80">{blurb}</p> : null}
-          {game.themes.length > 0 ? (
-            <ul className="mt-auto flex flex-wrap gap-1.5 pt-1">
-              {game.themes.map((theme) => (
-                <li key={theme}>
-                  <ThemeTag theme={theme} />
-                </li>
-              ))}
-            </ul>
+          {game.placeholder || game.themes.length > 0 ? (
+            <div className="mt-auto flex flex-wrap items-center gap-1.5 pt-1">
+              {game.placeholder ? <PlaceholderTag /> : null}
+              {game.themes.length > 0 ? (
+                <ul className="flex flex-wrap gap-1.5">
+                  {game.themes.map((theme) => (
+                    <li key={theme}>
+                      <ThemeTag theme={theme} />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
           ) : null}
         </div>
       </Link>
